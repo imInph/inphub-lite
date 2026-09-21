@@ -32,3 +32,4 @@ inphub-lite-*.md
 inphub-backup-*.txt
 inphub-export-*.json
 *.csv
+.test-build/

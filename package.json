@@ -10,7 +10,7 @@
     "check": "node tools/check-invariants.mjs",
     "build": "npm run typecheck && npm run check && node tools/build.mjs",
     "dev": "node tools/build.mjs --watch --serve",
-    "test": "TZ=Europe/Istanbul node --experimental-strip-types --test tests/"
+    "test": "node tools/test.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",
