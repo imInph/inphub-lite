@@ -58,15 +58,20 @@ const rel = (p) => path.relative(OUT, p).split(path.sep).join('/');
  * is that it's stable: an unchanged rebuild writes an identical public/, which
  * is what lets verify.yml catch a stale one with git diff --exit-code.
  *
- * tools/ counts as an input. This script picks the output filenames, so editing
- * it without touching src/ produces new chunks under the old id, and the worker
- * then reuses its cache and ends up holding both generations of every file.
- * Which is how this was found.
+ * This script counts as an input: it picks the output filenames, so editing it
+ * without touching src/ produces new chunks under the old id, and the service
+ * worker then reuses its cache and holds both generations of every file. Found
+ * exactly that way.
+ *
+ * Only this script, though, not all of tools/. check-invariants.mjs and test.mjs
+ * never touch the output, and hashing them meant a change to a test helper
+ * invalidated the deployed build and failed the staleness check for no reason.
+ * Found that way too.
  */
 async function sourceHash() {
   const files = [];
   for await (const f of walk(SRC)) files.push(f);
-  for await (const f of walk(path.join(ROOT, 'tools'))) files.push(f);
+  files.push(path.join(ROOT, 'tools', 'build.mjs'));
   files.sort();
   const hash = createHash('sha256');
   for (const file of files) {
