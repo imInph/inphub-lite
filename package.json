@@ -1,0 +1,24 @@
+{
+  "name": "inphub-lite",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "inphub lite \u2014 personal life dashboard as a static, offline-first PWA. No server, no database, no AI.",
+  "scripts": {
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.sw.json",
+    "check": "node tools/check-invariants.mjs",
+    "build": "npm run typecheck && npm run check && node tools/build.mjs",
+    "dev": "node tools/build.mjs --watch --serve",
+    "test": "TZ=Europe/Istanbul node --experimental-strip-types --test tests/"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "chart.js": "4.4.1",
+    "dompurify": "3.4.15",
+    "esbuild": "^0.25.0",
+    "marked": "18.0.13",
+    "marked-footnote": "1.4.0",
+    "typescript": "^5.4.0"
+  }
+}

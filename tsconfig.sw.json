@@ -1,0 +1,16 @@
+{
+  "//": "The service worker runs in a worker global, whose types conflict with DOM's (self, fetch, skipWaiting). It gets its own project rather than polluting the app's lib with WebWorker. Both are checked by `npm run typecheck`.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "WebWorker"],
+    "noEmit": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src/sw.ts"]
+}

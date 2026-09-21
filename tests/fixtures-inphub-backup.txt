@@ -1,0 +1,122 @@
+{
+    "format": "inphub-backup",
+    "format_version": 1,
+    "app": "inphub",
+    "app_version": "3.2.0",
+    "exported_at": "2026-09-21T20:00:00",
+    "counts": {
+        "settings": 2,
+        "expense_categories": 1,
+        "todos": 1,
+        "habits": 0,
+        "goals": 0,
+        "notes": 0,
+        "repos": 0,
+        "expenses": 1,
+        "habit_logs": 0,
+        "focus_sessions": 0,
+        "activity_log": 1,
+        "repo_suggestions": 0,
+        "daily_briefs": 1,
+        "chat_sessions": 0,
+        "chat_messages": 1
+    },
+    "data": {
+        "settings": [
+            {
+                "key": "base_currency",
+                "value": "TRY"
+            },
+            {
+                "key": "github_token",
+                "value": "ghp_leaked"
+            }
+        ],
+        "expense_categories": [
+            {
+                "id": 1,
+                "name": "Food & Drink",
+                "color": "#f97316",
+                "icon": "🍔",
+                "monthly_budget": 200,
+                "created_at": "2026-01-02T08:00:00"
+            }
+        ],
+        "todos": [
+            {
+                "id": 4,
+                "title": "Email Ali",
+                "description": null,
+                "status": "done",
+                "priority": "high",
+                "project": "home",
+                "tags": null,
+                "due_date": "2026-09-20",
+                "recurring": null,
+                "sort_order": 2,
+                "created_by": "ai",
+                "created_at": "2026-09-01T12:00:00",
+                "updated_at": "2026-09-20T18:00:00",
+                "completed_at": "2026-09-20T18:00:00"
+            }
+        ],
+        "habits": [],
+        "goals": [],
+        "notes": [],
+        "repos": [],
+        "expenses": [
+            {
+                "id": 17,
+                "type": "expense",
+                "amount": 42.5,
+                "currency": "TRY",
+                "category_id": 1,
+                "description": "Kahvaltı",
+                "payment_method": null,
+                "spent_at": "2026-09-10",
+                "is_recurring": 0,
+                "recurring_interval": null,
+                "created_by": "user",
+                "created_at": "2026-09-10T09:15:00"
+            }
+        ],
+        "habit_logs": [],
+        "focus_sessions": [],
+        "activity_log": [
+            {
+                "id": 9,
+                "type": "repos.synced",
+                "entity_type": "repo",
+                "entity_id": null,
+                "summary": "Synced 4 repositories",
+                "actor": "system",
+                "metadata": {
+                    "count": 4
+                },
+                "created_at": "2026-09-20T21:39:12"
+            }
+        ],
+        "repo_suggestions": [],
+        "daily_briefs": [
+            {
+                "id": 1,
+                "brief_date": "2026-09-01",
+                "content": "brief",
+                "provider": "claude",
+                "model": "x",
+                "created_at": "2026-09-01T07:00:00"
+            }
+        ],
+        "chat_sessions": [],
+        "chat_messages": [
+            {
+                "id": 3,
+                "session_id": "default",
+                "role": "user",
+                "content": "hi",
+                "actions": null,
+                "created_at": "2026-09-01T10:00:00"
+            }
+        ]
+    }
+}

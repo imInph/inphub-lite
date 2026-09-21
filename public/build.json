@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "build": "1d35c3a46b",
+  "schemaVersion": 1,
+  "files": [
+    "./",
+    "assets/js/app-P6LXFQCD.js",
+    "assets/css/app-U2OUFD4H.css",
+    "manifest.webmanifest",
+    "icons/apple-touch-icon.png",
+    "icons/favicon-32.png",
+    "icons/favicon.ico",
+    "icons/favicon.svg",
+    "icons/icon-192.png",
+    "icons/icon-512.png",
+    "icons/icon-maskable-512.png",
+    "icons/icon-maskable.svg",
+    "icons/icon.svg"
+  ]
+}

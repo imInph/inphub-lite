@@ -1,0 +1,34 @@
+# The reference clone of the full inphub. Local only, never published.
+inphub/
+
+# Dependencies
+node_modules/
+
+# Editor / OS cruft
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+.claude/
+
+# Local AI-assistant scratch
+CLAUDE.local.md
+
+# Secrets / keys, none of these belong in the repo, ever
+.env
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Personal data exports, these are backups of a real life. The browser drops
+# downloads next to the project, so match every filename the app can produce
+# rather than the three it happened to produce first.
+inphub-lite-*.json
+inphub-lite-*.txt
+inphub-lite-*.csv
+inphub-lite-*.md
+inphub-backup-*.txt
+inphub-export-*.json
+*.csv

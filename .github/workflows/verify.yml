@@ -1,0 +1,36 @@
+# Catch a stale public/.
+#
+# The whole design depends on the build output being committed, and the failure
+# mode is invisible: edit src/, forget to build, push, and the deployed site is
+# silently the previous version. The build is deterministic (tools/build.mjs
+# derives its id from the sources and writes no timestamp), so rebuilding here
+# and diffing is a reliable check.
+#
+# This DOES run a build in CI, but it never deploys — pages.yml still ships only
+# what is in the commit.
+name: Verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: public/ is up to date with src/
+        run: |
+          if ! git diff --exit-code --stat public/; then
+            echo "::error::public/ is out of date. Run 'npm run build' and commit the result."
+            exit 1
+          fi
