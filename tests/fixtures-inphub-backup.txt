@@ -29,7 +29,7 @@
             },
             {
                 "key": "github_token",
-                "value": "ghp_leaked"
+                "value": "REDACTED-BY-THE-EXPORTER"
             }
         ],
         "expense_categories": [
