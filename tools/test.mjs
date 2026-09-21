@@ -55,7 +55,16 @@ for (const f of await fs.readdir(TESTS)) {
   if (!f.endsWith('.test.ts')) await fs.copyFile(path.join(TESTS, f), path.join(OUT, f));
 }
 
-const child = spawn(process.execPath, ['--test', OUT], {
+// The compiled files by name, not the directory holding them. `node --test <dir>`
+// only learned to walk a directory in a later version; Node 22 treats the path
+// as a file and dies with "Cannot find module". Naming the files works on every
+// version, and is what the CI failure turned out to be.
+const compiled = (await fs.readdir(OUT))
+  .filter((f) => f.endsWith('.test.js'))
+  .map((f) => path.join(OUT, f))
+  .sort();
+
+const child = spawn(process.execPath, ['--test', ...compiled], {
   stdio: 'inherit',
   env: { ...process.env, TZ },
 });
