@@ -20,6 +20,8 @@ import { allSettings, appearanceFrom, saveSettings, type Appearance } from '../d
 import { exportBackup } from '../data/export.ts';
 import { parseBackup, type ParsedBackup } from '../data/backup.ts';
 import { applyBackup, type ImportMode } from '../data/import.ts';
+import { countEverything, eraseEverything } from '../data/erase.ts';
+import { fold } from '../data/fold.ts';
 import { getToken, setToken } from '../github.ts';
 import { daysBetween, localDate } from '../data/dates.ts';
 
@@ -146,6 +148,15 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
         <div class="text-dim" style="margin-top:8px;font-size:.82rem">
           One .txt file with everything, minus your GitHub token.
           Import reads backups from inphub lite and from inphub.</div>
+        <div class="toolbar" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);align-items:flex-start">
+          <div style="flex:1;min-width:0">
+            <div>Erase all data</div>
+            <div class="text-dim" style="font-size:.82rem">
+              Empties this browser: every entry, your settings and your GitHub token.
+              There is no undo and no copy on a server. Export first.</div>
+          </div>
+          <button type="button" class="btn btn-danger" data-action="erase">Erase all data…</button>
+        </div>
       </section>
 
       <div class="toolbar" style="grid-column:1/-1">
@@ -165,6 +176,7 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
   onAction(container, (action) => {
     if (action === 'export') void runExport();
     if (action === 'import') openImport(container);
+    if (action === 'erase') void openErase(container);
   });
 }
 
@@ -389,4 +401,100 @@ function openImport(container: HTMLElement): void {
       toast(err instanceof Error ? err.message : 'Import failed.', 'bad');
     }
   });
+}
+
+/* ------------------------------------------------------------------- erase */
+
+/** The word the user types to arm the button. Folded, so case never matters. */
+const ERASE_WORD = 'ERASE';
+
+/**
+ * Erase everything, behind a confirmation built to be read rather than clicked
+ * through.
+ *
+ * Three things make it that, and all three are deliberate. The counts are read
+ * from the database before the dialog opens, so what it says is going is what
+ * is actually there, the same promise parseBackup() makes on the way in. The
+ * export button is inside the dialog, because the moment someone is about to
+ * lose everything is the one moment offering a backup is worth anything. And
+ * the confirm stays disabled until the word is typed, because this is the only
+ * action in the app that a misclick cannot be walked back from: there is no
+ * server, no trash and no second copy.
+ */
+async function openErase(container: HTMLElement): Promise<void> {
+  let counts: Record<string, number>;
+  try {
+    counts = await countEverything();
+  } catch (err) {
+    toast(err instanceof Error ? err.message : 'Could not read the database.', 'bad');
+    return;
+  }
+
+  const rows = Object.entries(counts).filter(([, n]) => n > 0);
+  const total = rows.reduce((n, [, c]) => n + c, 0);
+
+  const backdrop = openModal({
+    title: 'Erase all data',
+    confirmLabel: 'Erase everything',
+    cancelLabel: 'Keep my data',
+    bodyHtml: `
+      <p style="margin-top:0">This deletes everything inphub lite has stored in this browser.
+        <strong>It cannot be undone.</strong> Nothing is kept on a server, so a backup file is
+        the only way any of it comes back.</p>
+      <div class="text-dim" style="font-size:.85rem">
+        ${total
+          ? `<div><strong>${total}</strong> rows will be erased:</div>
+             <div style="margin-top:4px">${rows.map(([t, n]) =>
+               `${escapeHtml(t.replace(/_/g, ' '))} ${n}`).join(' · ')}</div>`
+          : '<div>There is nothing stored yet, so there is nothing to lose.</div>'}
+        <div style="margin-top:8px">Your appearance settings and your saved GitHub token go too.</div>
+      </div>
+      <div class="toolbar" style="margin-top:14px">
+        <button type="button" class="btn" data-role="export-first">Export a backup first…</button>
+      </div>
+      <label style="margin-top:14px"><span>Type <code>${ERASE_WORD}</code> to confirm</span>
+        <input data-role="word" autocomplete="off" autocorrect="off"
+               autocapitalize="off" spellcheck="false" placeholder="${ERASE_WORD}"></label>`,
+    onConfirm: async () => {
+      // Belt and braces: the button is disabled until the word matches, but a
+      // dialog whose only guard is a disabled attribute is one Enter away from
+      // being no guard at all.
+      if (!armed()) return false;
+      const btn = confirmBtn();
+      btn.disabled = true;
+      btn.textContent = 'Erasing…';
+      try {
+        await eraseEverything();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Erase everything';
+        toast(err instanceof Error ? err.message : 'Could not erase everything.', 'bad');
+        return false;
+      }
+      // Reload rather than re-render. Every view on the page is holding rows
+      // that no longer exist, the appearance cache this tab booted from is
+      // gone, and seedIfEmpty() has to run again to put the defaults back. A
+      // fresh boot does all three; patching it up live would be guesswork.
+      location.reload();
+      return undefined;
+    },
+  });
+
+  const confirmBtn = () => backdrop.querySelector<HTMLButtonElement>('[data-act="confirm"]')!;
+  const word = backdrop.querySelector<HTMLInputElement>('[data-role="word"]')!;
+  const armed = () => fold(word.value.trim()) === fold(ERASE_WORD);
+
+  // ui.ts hardcodes btn-primary on the confirm; this is the one dialog where
+  // that is the wrong colour for what the button does.
+  confirmBtn().className = 'btn btn-danger';
+  confirmBtn().disabled = true;
+  word.addEventListener('input', () => {
+    confirmBtn().disabled = !armed();
+  });
+  word.focus();
+
+  backdrop.querySelector<HTMLButtonElement>('[data-role="export-first"]')!
+    .addEventListener('click', () => {
+      void runExport().then(() => void renderSettings(container));
+    });
 }

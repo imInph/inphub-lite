@@ -52,10 +52,11 @@ const RULES = [
   },
   {
     // clear() wipes a whole store, so it is as destructive as a delete and gets
-    // the same treatment. The importer's replace mode is the only caller.
-    name: 'clear-outside-import',
+    // the same treatment. Two callers, both of them a wipe the user asked for:
+    // the importer's replace mode, and the Erase all data button.
+    name: 'stray-clear',
     test: /(?<!caches)\.clear\(/,
-    allow: ['data/import.ts'],
+    allow: ['data/import.ts', 'data/erase.ts'],
     hint: 'clearing a store belongs to the importer; use remove() from data/tx.ts',
   },
   {

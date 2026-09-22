@@ -41,6 +41,7 @@ const TYPE_LABELS: Record<string, string> = {
   'repos.synced': 'repos synced', 'repo.suggestion': 'repo suggestion',
   'ai.brief': 'daily brief', 'ai.repo_analyzed': 'repo analysed',
   'auth.login': 'signed in', 'admin.user_active': 'account changed',
+  'data.imported': 'backup imported', 'data.erased': 'data erased',
 };
 
 /** A deleted row's id points at nothing, never offer to navigate there. */

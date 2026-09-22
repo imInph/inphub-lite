@@ -19,7 +19,7 @@ export const ACTIVITY_TYPES = [
   'goal.created', 'goal.progress',
   'focus.completed', 'focus.stopped', 'focus.deleted',
   'repos.synced',
-  'data.imported',
+  'data.imported', 'data.erased',
 ] as const;
 
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
@@ -71,4 +71,5 @@ export const TYPE_LABELS: Record<string, string> = {
   'focus.deleted': 'Focus deleted',
   'repos.synced': 'Repos synced',
   'data.imported': 'Data imported',
+  'data.erased': 'Data erased',
 };
