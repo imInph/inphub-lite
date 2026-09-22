@@ -2,6 +2,8 @@
 
 v1.1.0, MIT licensed.
 
+You can access inphub-lite [here](https://iminph.github.io/inphub-lite/).
+
 The same dashboard as [inphub](https://github.com/): money, tasks, habits, goals,
 notes, focus sessions, my GitHub repos and a history log, but with nothing
 behind it. No PHP, no MySQL, no XAMPP, no AI. It's a static site on GitHub
