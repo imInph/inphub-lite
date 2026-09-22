@@ -1,6 +1,6 @@
 # inphub lite
 
-v1.0.0, MIT licensed.
+v1.0.1, MIT licensed.
 
 The same dashboard as [inphub](https://github.com/): money, tasks, habits, goals,
 notes, focus sessions, my GitHub repos and a history log, but with nothing

@@ -1,10 +1,10 @@
 {
   "name": "inphub-lite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "inphub lite \u2014 personal life dashboard as a static, offline-first PWA. No server, no database, no AI.",
+  "description": "inphub lite — personal life dashboard as a static, offline-first PWA. No server, no database, no AI.",
   "scripts": {
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.sw.json",
     "check": "node tools/check-invariants.mjs",

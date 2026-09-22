@@ -28,6 +28,7 @@ import { renderDashboard } from './views/dashboard.ts';
 import { renderInsights } from './views/insights.ts';
 import { renderActivity } from './views/activity.ts';
 import { renderSettings } from './views/settings.ts';
+import { initPalette } from './views/command-palette.ts';
 
 /** Stamped by tools/build.mjs; also what the sidebar and the export envelope show. */
 export const VERSION = __VERSION__;
@@ -485,6 +486,13 @@ function init(): void {
   if ((location.hash.replace(/^#/, '').split('?')[0] || '') !== initial.view) {
     location.replace('#' + routeKey(initial));
   }
+
+  // The palette owns k and Ctrl/Cmd+K and sets window.inphubPalette for the
+  // Search button's inline onclick, so it is wired synchronously rather than
+  // behind boot(): the database is asynchronous here and the hotkey would be
+  // dead, and the button inert, for the whole first read of IndexedDB.
+  // buildCommands() re-runs on every open, so nothing it lists needs data yet.
+  initPalette();
 
   // The data layer is asynchronous, unlike inphub's PHP-injected boot payload,
   // so the shell paints immediately and the first view renders once the seed
