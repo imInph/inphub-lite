@@ -1,6 +1,6 @@
 # inphub lite
 
-v1.1.0, MIT licensed.
+v1.1.1, MIT licensed.
 
 You can access inphub-lite [here](https://iminph.github.io/inphub-lite/).
 

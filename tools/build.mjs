@@ -206,12 +206,30 @@ async function build() {
 
 await build();
 
+/**
+ * Live reload, dev only.
+ *
+ * The clients are EventSource connections held open on their own port, and
+ * they are told to reload after each successful watch rebuild. Nothing about
+ * this reaches public/: the snippet is injected into the HTML as it is served,
+ * so the file on disk stays byte-identical to what is committed, which is what
+ * .github/workflows/verify.yml diffs on every push.
+ */
+const RELOAD_PORT = PORT + 1;
+const reloadClients = new Set();
+
+function notifyReload() {
+  for (const res of reloadClients) res.write('data: reload\n\n');
+}
+
 if (WATCH) {
   const { watch } = await import('node:fs');
   let timer = null;
   watch(SRC, { recursive: true }, () => {
     clearTimeout(timer);
-    timer = setTimeout(() => build().catch((e) => console.error('[build]', e.message)), 80);
+    // Only a build that succeeded is worth reloading for. A failed one leaves
+    // the last good bundle in place, and the error printed here is the point.
+    timer = setTimeout(() => build().then(notifyReload).catch((e) => console.error('[build]', e.message)), 80);
   });
   console.log('[build] watching src/');
 }
@@ -222,13 +240,42 @@ if (SERVE) {
   const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css',
     '.json': 'application/json', '.webmanifest': 'application/manifest+json',
     '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.map': 'application/json' };
+  // Deliberately on its own port. The service worker returns early for any
+  // cross-origin request, so an endpoint over here is one it will never try to
+  // intercept or cache, and an open-ended event stream is the last thing that
+  // should land in a cache. Same-origin would have needed a dev-only branch in
+  // the shipped sw.ts.
+  if (WATCH) {
+    createServer((req, res) => {
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-store',
+        Connection: 'keep-alive',
+        'Access-Control-Allow-Origin': '*',
+      });
+      // The browser reconnects on its own after a drop, so restarting the dev
+      // server reconnects the page rather than stranding it.
+      res.write('retry: 500\n\n');
+      reloadClients.add(res);
+      req.on('close', () => reloadClients.delete(res));
+    }).listen(RELOAD_PORT);
+  }
+
+  const RELOAD_TAG = `<script>new EventSource('http://localhost:${RELOAD_PORT}')`
+    + '.onmessage=()=>location.reload();</script>';
+
   createServer(async (req, res) => {
     const url = decodeURIComponent((req.url ?? '/').split('?')[0]);
     let file = path.join(OUT, url);
     if (url.endsWith('/')) file = path.join(file, 'index.html');
     if (!file.startsWith(OUT)) { res.writeHead(403).end(); return; }
     try {
-      const body = await fs.readFile(file);
+      let body = await fs.readFile(file);
+      // Injected on the way out, never written to disk. Watch mode only: with
+      // --serve alone there is nothing to be notified about.
+      if (WATCH && path.extname(file) === '.html') {
+        body = Buffer.from(body.toString('utf8').replace('</body>', `${RELOAD_TAG}</body>`));
+      }
       res.writeHead(200, {
         'Content-Type': TYPES[path.extname(file)] ?? 'application/octet-stream',
         'Cache-Control': 'no-cache',
@@ -236,5 +283,5 @@ if (SERVE) {
     } catch {
       res.writeHead(404, { 'Content-Type': 'text/plain' }).end('404');
     }
-  }).listen(PORT, () => console.log(`[serve] http://localhost:${PORT}/`));
+  }).listen(PORT, () => console.log(`[serve] http://localhost:${PORT}/ (live reload on)`));
 }

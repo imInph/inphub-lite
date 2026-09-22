@@ -1,10 +1,10 @@
 {
-  "version": "1.1.0",
-  "build": "f9d6cc2fed",
+  "version": "1.1.1",
+  "build": "0578beb6bf",
   "schemaVersion": 1,
   "files": [
     "./",
-    "assets/js/app-UZ57AZW2.js",
+    "assets/js/app-CTEGXH5N.js",
     "assets/css/app-U2OUFD4H.css",
     "manifest.webmanifest",
     "icons/apple-touch-icon.png",
