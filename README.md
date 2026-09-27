@@ -131,4 +131,5 @@ changing anything.
 
 ## License
 
-[MIT](LICENSE). Do what you want with it, no warranty.
+[AGPL-3.0](LICENSE) © imInph. The libraries bundled into the app keep their own
+licenses, listed in [THIRD-PARTY.md](THIRD-PARTY.md).
