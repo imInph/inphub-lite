@@ -25,6 +25,16 @@ import { fold } from '../data/fold.ts';
 import { getToken, setToken } from '../github.ts';
 import { daysBetween, localDate } from '../data/dates.ts';
 
+/**
+ * Where the source lives, linked from the footer below.
+ *
+ * Not decoration. inphub lite is AGPL-3.0, and section 13 requires a version
+ * served over a network to prominently offer its Corresponding Source to the
+ * people using it. A static site is delivered to every visitor's browser, so
+ * that applies to this deployment as much as to anyone's fork. Keep the link.
+ */
+const SOURCE_URL = 'https://github.com/imInph/inphub-lite';
+
 /** The sentinel a masked secret round-trips as, so a mask never overwrites the real value. */
 const SECRET_UNCHANGED = '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
 
@@ -162,7 +172,8 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
       <div class="toolbar" style="grid-column:1/-1">
         <button class="btn btn-primary" type="submit">Save</button>
         <span class="text-dim" style="font-size:.82rem">
-          inphub lite v${escapeHtml(VERSION)} · build ${escapeHtml(BUILD)} · ${escapeHtml(used)} stored${persisted ? ', kept by the browser' : ''}</span>
+          inphub lite v${escapeHtml(VERSION)} · build ${escapeHtml(BUILD)} · ${escapeHtml(used)} stored${persisted ? ', kept by the browser' : ''}
+          · <a href="${SOURCE_URL}" target="_blank" rel="noopener noreferrer">source</a> (AGPL-3.0)</span>
       </div>
     </form>`;
 

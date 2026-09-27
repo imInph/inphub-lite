@@ -1,28 +1,28 @@
 # inphub lite
 
-v1.1.1, MIT licensed.
+v1.1.2, AGPL-3.0 licensed.
 
 You can access inphub-lite [here](https://iminph.github.io/inphub-lite/).
 
-The same dashboard as [inphub](https://github.com/): money, tasks, habits, goals,
-notes, focus sessions, my GitHub repos and a history log, but with nothing
-behind it. No PHP, no MySQL, no XAMPP, no AI. It's a static site on GitHub
-Pages and everything it knows lives in your browser.
+The same dashboard as [inphub](https://github.com/imInph/inphub): money, tasks,
+habits, goals, notes, focus sessions, my GitHub repos and a history log, but
+with nothing behind it. No server, no database, no AI. It's a static site on
+GitHub Pages and everything it knows lives in your browser.
 
-inphub only runs on my own machine with XAMPP started. This one opens on a
-phone, installs to the home screen, and works on a plane.
+inphub only runs on my own machine, with its server and MySQL running. This one
+opens on a phone, installs to the home screen, and works on a plane.
 
 ## What's different from inphub
 
 | | inphub | inphub lite |
 | --- | --- | --- |
-| Runs on | XAMPP, localhost only | GitHub Pages, any device |
-| Backend | PHP 8, 21 endpoints | none |
+| Runs on | its own server, localhost only | GitHub Pages, any device |
+| Backend | ASP.NET Core (C#, .NET 10) | none |
 | Data | MySQL, 17 tables | IndexedDB, 12 stores |
 | Accounts | hand-made logins | none, it's your browser |
 | AI | Claude / Ollama / LM Studio | gone |
 | Offline | no | yes, installable |
-| Backup | mysqldump | JSON export and import |
+| Backup | JSON export and import | the same file, both ways |
 
 Everything else is the same on purpose, down to the stylesheet. Same eleven
 views, same widgets, same keyboard shortcuts, same glass-over-wallpaper look

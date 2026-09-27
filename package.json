@@ -1,8 +1,8 @@
 {
   "name": "inphub-lite",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "description": "inphub lite — personal life dashboard as a static, offline-first PWA. No server, no database, no AI.",
   "scripts": {
