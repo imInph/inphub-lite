@@ -15,6 +15,11 @@ It is the source of truth for anything ported: when a number here disagrees with
 inphub's, inphub is right and this is a porting bug. Read `inphub/CLAUDE.md`
 before changing ported logic; it records why things are the way they are.
 
+lite was ported from inphub v3, when it was PHP. Since v4.1 inphub is ASP.NET Core
+(C#) over MySQL with no PHP left, so the PHP names below (PDO, `strtotime`) and
+the `lib/*.php` references in code comments describe the behaviour lite copied,
+not files you will find in the clone today. `git pull` the clone before porting anything new.
+
 **The design system is a copy, not an inspiration.** `src/styles/app.css` is
 inphub's `app.css` with exactly two blocks removed (Login, Chat panel) and one
 rule added (`.logo-lite`). A divergence is a bug, not a cleanup.
@@ -37,7 +42,7 @@ rule added (`.logo-lite`). A divergence is a bug, not a cleanup.
 ## Architecture
 
 ### The data layer (`src/data/`)
-No server, so everything PHP used to do happens here.
+No server, so everything inphub's server does happens here.
 
 - **`db.ts` is the only `indexedDB.open()`.** It owns the schema, the
   append-only `MIGRATIONS` array, `withTx()`, and the `onblocked` /
@@ -65,7 +70,8 @@ descriptor: omit it and `tsc` fails. Skipping is spelled `SILENT`, so
 
 ### Backup / restore (`src/data/backup.ts`, `import.ts`, `export.ts`)
 `BACKUP-FORMAT.md` is the contract and **an identical copy lives in the inphub repo**,
-alongside `lib/backup.php` which is this file's mirror. Both apps read and write the same
+alongside `server/Services/Backup.cs` which is this file's mirror (it was
+`lib/backup.php` before v4.1). Both apps read and write the same
 `.txt`. Change one side without the other and the migration breaks in one direction only,
 which is the hardest kind to notice. Bump `format_version` when the shape changes.
 
@@ -75,9 +81,9 @@ store. Two modes only: **replace** keeps original ids (the only way `entity_id` 
 links survive) and **merge** never trusts an incoming id. `habit_logs` collisions take
 `max(count)`, not the sum, or importing the same file twice doubles every day.
 
-`import.ts` is the only caller of `clear()` and is allowlisted for it in
-check-invariants. The `COERCE` table is the same job `normalize.ts` does for the create
-path, and it exists because an inphub file carries PDO's stringified numbers.
+`import.ts` and `erase.ts` are the only callers of `clear()` and are allowlisted for
+it in check-invariants. The `COERCE` table is the same job `normalize.ts` does for the create
+path, and it exists because a file from inphub v3 carries PDO's stringified numbers.
 
 ### Dates (`src/data/dates.ts`)
 Every date and time string is built here, and **`toISOString()` is banned**.
